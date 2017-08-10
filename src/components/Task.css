@@ -1,0 +1,90 @@
+.display {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    padding: .5rem 1rem;
+    color: #51a0fc;
+    /*text-shadow: 1px 0 0 #052d4a,*/
+    /*0 1px 0 #052d4a;*/
+    min-height: 2rem;
+}
+.task {
+    font-size: 2rem;
+    font-weight: 700;
+}
+.solutions {
+    padding: 0;
+    display: inline-block;
+}
+.solution {
+    min-width: 2.6rem;
+    font-size: .8rem;
+    color: #666;
+    padding-top: .1rem;
+    box-sizing: border-box;
+    height: 1.2rem;
+    display: inline-block;
+    line-height: 1rem;
+    text-align: center;
+    border-radius: .5rem;
+    background-color: #e2e2e2;
+    margin: 0 .15rem;
+    transition: background-color .2s ease-in;
+}
+.solution--correct {
+    background-color: #2a5298;
+    color: #fff;
+    animation: correctSolutionAnimation .3s var(--bouncy-easing) .25s;
+}
+.correct {
+    /* @keyframes duration | timing-function | delay |
+iteration-count | direction | fill-mode | play-state | name */
+    animation: correctAnimation .3s var(--bouncy-easing) .25s;
+}
+.fail {
+    animation: failAnimation .3s linear;
+}
+@keyframes correctSolutionAnimation {
+    0%, 100% {
+        transform: scale(1);
+    }
+    25% {
+        transform: scale(.9);
+    }
+    75% {
+        transform: scale(1.2);
+    }
+}
+@keyframes correctAnimation {
+    0%, 100% {
+        color: currentColor;
+        transform: scale(1);
+    }
+    25% {
+        transform: scale(.8);
+    }
+    50% {
+        color: #2AF598;
+    }
+    75% {
+        transform: scale(1.5);
+    }
+}
+@keyframes failAnimation {
+    0%, 100% {
+        color: currentColor;
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(20%);
+        color: #F76B1C;
+    }
+    50% {
+        transform: translateX(0);
+    }
+    75% {
+        transform: translateX(-20%);
+        color: #F76B1C;
+    }
+}
