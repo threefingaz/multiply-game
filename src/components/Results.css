@@ -1,0 +1,29 @@
+.results {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    background: rgba(255, 255, 255, .9);
+    z-index: 1000;
+
+    text-align: center;
+    font-weight: 700;
+    font-size: 2rem;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.result__fail {
+    display: block;
+    font-weight: 700;
+}
+.fail-digit {
+    font-size: 4rem;
+    display: block;
+}
+.result__time {
+    display: block;
+    font-weight: 700;
+}

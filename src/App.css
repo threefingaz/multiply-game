@@ -1,6 +1,13 @@
 :root {
     --bouncy-easing: cubic-bezier(0.68, -0.55, 0.265, 1.55);
     --cell-bg: linear-gradient(0deg, rgba(255, 255, 255, .5) 0%, rgba(255, 255, 255, .2) 100%);
+    --color-darkblue: #052d4a;
+    --color-lightblue: #51a0fc;
+    --color-green: #31d2ac;
+    --color-red: #e96477;
+    --color-yellow: #fedd74;
+    --color-gray: #b5c3d6;
+    --font-system: -apple-system, BlinkMacSystemFont, 'avenir next', avenir, 'helvetica neue', helvetica, ubuntu, roboto, noto, 'segoe ui', arial, sans-serif;
 }
 
 html,
@@ -8,7 +15,7 @@ body {
     height: 100vh;
     width: 100%;
     overflow: auto;
-    font-family: 'Roboto Mono', monospace;
+    font-family: 'Comfortaa', monospace;
 }
 
 .App {
@@ -20,9 +27,19 @@ body {
     box-sizing: border-box;
     overflow: hidden;
 }
+.app--playing {
+    background-color: #fff;
+}
+.app--learning {
+    background-color: var(--color-lightblue);
+}
+
+.app--learning .display {
+    margin-bottom: 4px;
+}
 
 .keyboard {
-    background-image: linear-gradient(to top, #1e3c72 0%, #1e3c72 1%, #2a5298 100%);
+    background: var(--color-lightblue);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -39,8 +56,7 @@ body {
     top: 0;
     left: 0;
     z-index: 0;
-    background-color: #08AEEA;
-    background-image: linear-gradient(180deg, #08AEEA 0%, #2AF598 100%);
+    background: var(--color-green);
     animation: checkAnimation .5s linear;
     will-change: opacity;
 }
@@ -54,74 +70,91 @@ body {
     top: 0;
     left: 0;
     z-index: 0;
-    background-color: #FAD961;
-    background-image: linear-gradient(0deg, #FAD961 0%, #F76B1C 99%);
+    background: var(--color-red);
     animation: checkAnimation .3s linear;
     will-change: opacity;
-}
-
-.number {
-    display: flex;
-    width: 100%;
-    text-align: center;
-    align-items: center;
-    justify-content: center;
-    height: 2rem;
-}
-
-.number--byOne {
-    /*background-color: #08AEEA;*/
-}
-
-.number--sameNumbers {
-    /*background-color: #2AF598;*/
 }
 
 .display {
     text-align: center;
     max-width: 400px;
+    height: 80px;
+    overflow: hidden;
     margin: 0 auto;
+    box-sizing: border-box;
+    z-index: 1;
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: .5rem 1rem;
+    color: var(--color-yellow);
+    min-height: 2rem;
+    position: relative;
 }
 
-.selected {
-    text-align: center;
-    width: 100%;
-    font-size: 5rem;
-    font-weight: 700;
-    color: rgba(255, 255, 255, .95);
-    text-shadow: 0 2px 10px rgba(0, 0, 30, .2);
+.selected-cell {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 6rem;
+    height: 1.75rem;
     position: absolute;
-    top: 30vh;
+    top: -1.25rem;
+    left: calc(50% - 3rem);
+
+    background: var(--color-lightblue);
+    border-radius: 1rem;
+    border: 2px solid var(--color-darkblue);
+
+    color: #fff;
+    font-size: 1.5rem;
+    letter-spacing: -1px;
+    font-weight: 700;
     line-height: 0;
     pointer-events: none;
+}
+.selected-cell--visible {
+    transform: translateY(0);
+    display: flex;
+    animation: .1s selectedShowAnimation .1s var(--bouncy-easing) forwards;
+}
+.selected-cell--hidden {
+    transform: translateY(0);
+    display: flex;
+    animation: .1s selectedHideAnimation var(--bouncy-easing) forwards;
 }
 
 .number--selected:after {
     content: '';
     display: block;
     border-radius: 50%;
-    width: 50%;
-    height: 50%;
-    background-color: #fff;
+    width: 40%;
+    height: 40%;
+    background: var(--color-darkblue);
     position: absolute;
-    top: 25%;
-    left: 25%;
+    top: 30%;
+    left: 30%;
     animation: selectAnimation .2s linear forwards;
     will-change: transform, opacity;
     pointer-events: none;
+    z-index: 1000;
 }
 
 .tip:after {
     content: '';
     display: block;
     border-radius: 50%;
-    width: 50%;
-    height: 50%;
-    background-color: #fff;
+    width: 40%;
+    height: 40%;
+    box-sizing: border-box;
+    /*background: var(--color-red);*/
+    border: 2px solid var(--color-red);
     position: absolute;
-    top: 25%;
-    left: 25%;
-    animation: tipAnimation 1s linear infinite;
+    top: calc(35% - 1px);
+    left: calc(35% - 1px);
+    animation: tipAnimation .75s linear infinite;
     will-change: transform, opacity;
     pointer-events: none;
     z-index: 1000;
@@ -133,25 +166,46 @@ body {
     fill: currentColor;
 }
 
+.stroked {
+    position: relative;
+}
+.stroked:after {
+    content: attr(data-text);
+    position: absolute;
+    -webkit-text-stroke: 4px var(--color-darkblue);
+    text-align: center;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: -2;
+    font-size: 1em;
+}
+.button {
+    background-color: var(--color-yellow);
+    border: 2px solid var(--color-darkblue);
+    text-transform: uppercase;
+    border-radius: 1rem;
+    height: 2rem;
+    flex: 1;
+}
+
 @keyframes tipAnimation {
-    0% {
+    0%, 100% {
         transform: scale(1);
-        opacity: .8;
     }
-    100% {
-        transform: scale(3);
-        opacity: .1;
+    50% {
+        transform: scale(3.5);
     }
 }
 
 @keyframes selectAnimation {
     0% {
         transform: scale(.8);
-        opacity: 1;
+        opacity: .5;
     }
     100% {
         transform: scale(1);
-        opacity: .6;
+        opacity: 1;
     }
 }
 
@@ -161,5 +215,26 @@ body {
     }
     25%, 75% {
         opacity: 1;
+    }
+}
+
+@keyframes selectedShowAnimation {
+    0% {
+        opacity: 0;
+        transform: translateY(1rem);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+@keyframes selectedHideAnimation {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-1rem);
     }
 }

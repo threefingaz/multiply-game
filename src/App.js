@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
+import Intro from './components/Intro';
 import Task from './components/Task';
+import Results from './components/Results';
 import Progress from './components/Progress';
 
 import './App.css';
 import Table from './components/Table';
-
-// base for multiplication table
-const n = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 // base for multiplication table by levels
 const numbers = [
@@ -19,14 +18,13 @@ class App extends Component {
     constructor() {
         super();
         const level = window.localStorage.level || 0;
-
         // generate tasks and possible solutions
         this.table = getTable(level);
         // generate randomness
         this.queue = getQueue(this.table.length);
         this.state = {
             // is game started?
-            play: true,
+            play: false,
             // current level
             level,
             // current task
@@ -38,9 +36,33 @@ class App extends Component {
             // current selected cell 'n × n'
             cell: '',
             // answer check status (fail, correct, default)
-            check: 'default'
+            check: 'default',
+            score: {
+                correct: 0,
+                fail: 0,
+                start: Date.now(),
+                end: 0
+            }
         };
     }
+
+    gameSwitch = (bol) => {
+        if (bol) {
+            this.queue = getQueue(this.table.length);
+        }
+        this.setState({
+            play: bol,
+            task: 0,
+            tip: true,
+            answers: [],
+            score: {
+                correct: 0,
+                fail: 0,
+                start: Date.now(),
+                end: 0
+            }
+        });
+    };
 
     selectCell = (e) => {
         e.preventDefault();
@@ -58,9 +80,7 @@ class App extends Component {
 
         const cell = this.state.cell;
         let newCell = target.dataset.cell || cell;
-        this.setState({
-            cell: newCell
-        });
+        this.setState({cell: newCell});
     };
 
     makeCheck = (e) => {
@@ -69,9 +89,10 @@ class App extends Component {
             .some(element => (
                 element === 'table' || element === 'table__cell'
             ));
+
         if (!is_table) return;
 
-        const {task, answers, cell} = {...this.state};
+        let {task, answers, cell, score, check} = {...this.state};
         const solutions = this.table[this.queue[task]].solutions;
         const correct = solutions.includes(cell);
 
@@ -79,83 +100,103 @@ class App extends Component {
             answers.push(cell);
         }
 
-        if (window.navigator.vibrate) {
-            correct ? (
-                window.navigator.vibrate([200])
-            ) : (
-                window.navigator.vibrate([100, 100])
-            );
+        if (correct) {
+            score.correct++;
+            check = 'correct';
+        } else {
+            score.fail++;
+            check = 'fail';
         }
 
-        this.setState({
-            check: correct ? 'correct' : 'fail',
-            answers
-        });
+        this.setState({check, answers, score});
     };
 
     nextTask = () => {
-        const {task, answers, level} = {...this.state};
+        const {task, answers, level, score} = {...this.state};
         const solutions = this.table[this.queue[task]].solutions;
 
-        if (!solutions) return this.nextTask();
+        const newState = {
+            task, level, answers,
+            check: 'default',
+            tip: false,
+            cell: '',
+        };
 
-        let newLevel = level;
-        if (task === this.queue.length - 1) {
-            newLevel = level === 2 ? 2 : level + 1;
-            this.table = getTable(newLevel);
+        const isLastSolutionInTask = answers.length === solutions.length;
+        const isLastTaskInLevel = task === this.queue.length - 1 && isLastSolutionInTask;
+        const isLastTaskInLastLevel = level === 2 && isLastTaskInLevel && isLastSolutionInTask;
+
+        // when it's a last task in queue go to the new level
+        if (isLastTaskInLevel) {
+            newState.level = level === 2 ? 2 : level + 1;
+            this.table = getTable(newState.level);
             this.queue = getQueue(this.table.length);
         }
 
-        if (answers.length === solutions.length) {
-            this.setState({
-                task: task + 1,
-                check: 'default',
-                tip: false,
-                level: newLevel,
-                answers: [],
-                cell: ''
-            });
-            return;
+        // when it's a last task in last level stop the game
+        if (isLastTaskInLastLevel) {
+            newState.play = false;
+            score.end = Date.now();
+            newState.score = score;
         }
 
-        this.setState({
-            check: 'default',
-            tip: false,
-            level: newLevel,
-            cell: '',
-        });
+        // when it's a last solution go to the next task
+        if (isLastSolutionInTask) {
+            newState.task = isLastTaskInLevel ? 0 : task + 1;
+            newState.answers = [];
+        }
+
+        this.setState(newState);
     };
 
     render() {
-        const {task, check, answers, cell, tip, play, level} = {...this.state};
+        const {
+            task, check, answers, cell, tip, play, level, score
+        } = {...this.state};
         const {table, queue} = {...this};
         const currentTask = table[queue[task]].task;
         const solutions = table[queue[task]].solutions;
 
-        const numbersClass = {
+        const keyboardClass = {
             fail: 'keyboard keyboard--fail',
             correct: 'keyboard keyboard--correct',
             default: 'keyboard'
         };
 
+        const selectedClass = cell.length ? ' selected-cell--visible' : ' selected-cell--hidden';
+
         return (
-            <div className="App"
+            <div className={`App ${play ? 'app--playing' : 'app--learning'}`}
                  onMouseMove={this.selectCell}
                  onMouseUp={this.makeCheck}
                  onTouchMove={this.selectCell}
                  onTouchStart={this.selectCell}
                  onTouchEnd={this.makeCheck}>
 
-                {Task({
-                    currentTask, solutions, check, answers, nextTask: this.nextTask
-                })}
+                {play ? Task({
+                    currentTask, solutions, check, answers,
+                    nextTask: this.nextTask,
+                    gameSwitch: this.gameSwitch
+                }) : (
+                    Intro({gameSwitch: this.gameSwitch})
+                )}
 
-                {Progress({task})}
-                <div className={numbersClass[check]}>
-                    <span className="selected">{cell}</span>
-                    {Table({
-                        n, numbers, cell, task, tip, table, queue, play, level
-                    })}
+                {!play && (score.correct || score.fail) ? (
+                    Results({score})
+                ) : null}
+
+                {play ? Progress({task, total: table.length}) : null}
+
+                <div className={keyboardClass[check]}>
+                    {play ?
+                        <span className={`selected-cell${selectedClass}`}>
+                            {cell}
+                        </span> : null
+                    }
+
+                    {
+                        Table({numbers, cell, task, tip, table, queue, play, level})
+                    }
                 </div>
             </div>
         );
@@ -164,12 +205,10 @@ class App extends Component {
 
 function getTable(level) {
     return numbers[level].reduce((arr, firstNum) => {
+
         const items = numbers[2].reduce((tasks, secNum) => {
             const task = firstNum * secNum;
-
-            const is_exist = arr.some(prev => {
-                return prev.task === task;
-            });
+            const is_exist = arr.some(prev => prev.task === task);
 
             if (is_exist) return tasks;
 
@@ -183,7 +222,7 @@ function getTable(level) {
                     return result;
                 }
             }, []);
-            tasks = [...tasks, { task, solutions }];
+            tasks = [...tasks, {task, solutions}];
             return tasks;
         }, []);
 

@@ -3,33 +3,37 @@ import LockIcon from'./svg/icon-lock';
 
 import './Table.css';
 
-const Table = (props) => {
+const Table = ({numbers, cell, task, tip, table, queue, play, level }) => {
     const renderCol = (num1, num2, i) => {
-        const [cellNum1, cellNum2] = props.cell.length ? props.cell.split('×') : [0, 0];
+        const [cellNum1, cellNum2] = cell.length ? cell.split('×') : [0, 0];
 
         let selectedClass = '';
-        if (cellNum1 >= num1 && cellNum2 >= num2) {
-            selectedClass = ' number--selected'
+        let tipClass = '';
+        const currentTask = table[queue[task]];
+        if (play) {
+            if (cellNum1 >= num1 && cellNum2 >= num2) {
+                selectedClass = ' number--selected'
+            }
+            if (play && task === 0 && tip && currentTask.solutions) {
+                const solution = currentTask.solutions[0];
+                if (!solution) return;
+                tipClass = solution === `${num1} × ${num2}` ? ' tip' : '';
+            }
         }
 
         let colClass = '';
-        if (num1 * num2 === num1 || num1 * num2 === num2) {
-            colClass = ' number--byOne';
-        }
-        if (num1 === num2) {
-            colClass = ' number--sameNumbers';
+        if (!play) {
+            if (num1 * num2 === num1 || num1 * num2 === num2) {
+                colClass = ' number--byOne';
+            }
+            if (num1 === num2) {
+                colClass = ' number--sameNumbers';
+            }
         }
 
-        let tipClass = '';
-        const table = props.table[props.queue[props.task]];
-        if (props.task === 0 && props.tip && table.solutions) {
-            const solution = table.solutions[0];
-            if (!solution) return;
-            tipClass = solution === `${num1} × ${num2}` ? ' tip' : '';
-        }
 
         let isCellLocked;
-        switch (props.level) {
+        switch (level) {
             case 0:
                 isCellLocked = num1 > 3;
                 break;
@@ -40,14 +44,14 @@ const Table = (props) => {
                 isCellLocked = false;
         }
 
-        const data = isCellLocked ? `locked` : `${num1} × ${num2}`;
+        const data = !play || isCellLocked ? `locked` : `${num1} × ${num2}`;
 
         return (
             <td key={i} className={`table__cell${colClass}${selectedClass}${tipClass}`} data-cell={data}>
-                {!props.play ? (
+                {!play ? (
                     <span className="digit">{num1 * num2}</span>
                 ) : null}
-                {isCellLocked ? (
+                {play && isCellLocked ? (
                     <span className="digit">{LockIcon()}</span>
                 ) : null}
             </td>
@@ -59,7 +63,7 @@ const Table = (props) => {
             <th className="table__cell table__head first-cell">
                 <span className="digit">{i + 1}</span>
             </th>
-            {props.n.map((number, j) => renderCol(number, i + 1, j))}
+            {numbers[2].map((number, j) => renderCol(number, i + 1, j))}
         </tr>
     );
 
@@ -68,13 +72,13 @@ const Table = (props) => {
             <tbody>
             <tr className="table__row">
                 <th className="table__cell table__head"></th>
-                {props.n.map((number, i) => (
+                {numbers[2].map((number, i) => (
                     <th key={i} className="table__cell table__head">
                         {number}
                     </th>
                 ))}
             </tr>
-            {props.n.map((number, i) => renderRow(i))}
+            {numbers[2].map((number, i) => renderRow(i))}
             </tbody>
         </table>
     )

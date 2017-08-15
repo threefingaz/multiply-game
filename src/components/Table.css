@@ -5,42 +5,54 @@
     position: relative;
     user-select: none;
     max-width: 400px;
-    margin: 0 auto;
+    margin: 0 auto 100px;
     border-spacing: 1px;
-    margin-bottom: 100px;
 }
 
 .table__cell {
-    /*width: calc(10% - 4px);*/
     position: relative;
-    border-radius: 1px;
-    background-image: var(--cell-bg);
+    background: var(--color-yellow);
     flex-basis: calc(10% - 4px);
-    margin-right: 1px;
-    margin-bottom: 1px;
+    border-top: 2px solid var(--color-darkblue);
+    border-right: 2px solid var(--color-darkblue);
+}
+[data-cell='locked'] {
+    background: var(--color-gray);
+    color: var(--color-darkblue);
 }
 .table__cell:last-child {
     margin-right: 20px;
+
 }
+.table__cell:nth-child(2) {
+    border-left: 2px solid var(--color-darkblue);
+}
+.table__row:last-child .table__cell {
+    border-bottom: 2px solid var(--color-darkblue);
+}
+
 .table__row {
     display: flex;
     flex-direction: row;
     width: 100%;
     padding-right: 20px;
 }
+
 .first-cell {
+    color: var(--color-darkblue);
     max-width: 20px;
     width: 20px;
     flex-grow: 0;
+    border: none;
 }
 .table__cell:before {
     content: '';
     display: block;
     padding-top: 100%;
 }
-
 .table__head {
-    color: rgba(255,255,255,.5);
+    color: var(--color-darkblue);
+    border: none !important;
     position: relative;
     font-weight: normal;
     font-size: .75rem;
@@ -49,17 +61,38 @@
 
 .digit {
     position: absolute;
-    color: rgba(255,255,255,.5);
     width: 100%;
     height: 100%;
     top: 0;
     left: 0;
     text-align: center;
 
+    color: var(--color-darkblue);
+    font-size: 0.75rem;
+    font-weight: 700;
+
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+
+.number {
+    display: flex;
+    width: 100%;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    height: 2rem;
+}
+
+.number--byOne {
+    background-color: var(--color-lightblue);
+}
+
+.number--sameNumbers {
+    background-color: var(--color-green);
 }
 
 .icon__lock {
