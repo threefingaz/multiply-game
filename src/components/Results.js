@@ -3,7 +3,7 @@ import React from 'react';
 
 import './Results.css';
 
-const results = ({score}) => {
+const results = ({score, gameSwitch}) => {
     const seconds = (score.end - score.start) / 1000;
     const m = Math.floor(seconds / 60);
     const s = Math.floor(seconds - m * 60);
@@ -16,7 +16,9 @@ const results = ({score}) => {
         <span className="result__time">
             ⏱ {m} : {s}
         </span>
-        <button className="closeResults">
+        <button className="closeResults"
+            onTouchEnd={() => {gameSwitch(false)}}
+            onClick={() => {gameSwitch(false)}}>
             Закрыть
         </button>
     </div>;

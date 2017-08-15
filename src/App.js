@@ -182,7 +182,7 @@ class App extends Component {
                 )}
 
                 {!play && (score.correct || score.fail) ? (
-                    Results({score})
+                    Results({score, gameSwitch: this.gameSwitch})
                 ) : null}
 
                 {play ? Progress({task, total: table.length}) : null}

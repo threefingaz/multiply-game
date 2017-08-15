@@ -26,7 +26,6 @@ const task = (props) => {
         <button className="button-stop"
             onClick={() => {props.gameSwitch(false)}}
             onTouchEnd={() => {props.gameSwitch(false)}}>
-            ×
         </button>
     </div>;
 };

@@ -17,7 +17,12 @@
     border-right: 2px solid var(--color-darkblue);
 }
 [data-cell='locked'] {
-    background: var(--color-gray);
+    background: url('./svg/lock.svg') center no-repeat var(--color-gray);
+    background-size: 10px;
+    color: var(--color-darkblue);
+}
+.app--learning [data-cell='locked'] {
+    background-image: none;
     color: var(--color-darkblue);
 }
 .table__cell:last-child {

@@ -51,9 +51,6 @@ const Table = ({numbers, cell, task, tip, table, queue, play, level }) => {
                 {!play ? (
                     <span className="digit">{num1 * num2}</span>
                 ) : null}
-                {play && isCellLocked ? (
-                    <span className="digit">{LockIcon()}</span>
-                ) : null}
             </td>
         );
     };

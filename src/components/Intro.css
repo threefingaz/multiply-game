@@ -6,7 +6,7 @@
     font-size: 1.5rem;
     text-align: left;
     flex: 2;
-    margin-: 0;
+    margin: 0;
 }
 .button-play {
     background-color: var(--color-yellow);
