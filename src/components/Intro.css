@@ -1,18 +1,31 @@
 .intro-header {
-    font-family: var(--font-system);
     color: var(--color-darkblue);
-    font-weight: normal;
-    letter-spacing: 2px;
-    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -.05rem;
+    font-size: 1.4rem;
     text-align: left;
-    flex: 2;
     margin: 0;
 }
 .button-play {
     background-color: var(--color-yellow);
     border: 2px solid var(--color-darkblue);
-    text-transform: uppercase;
     border-radius: 1rem;
     height: 2rem;
-    flex: 1;
+    padding: .2rem 1rem 0;
+
+    font-family: 'Comfortaa', var(--font-system);
+    color: var(--color-darkblue);
+    font-weight: 700;
+    letter-spacing: .05rem;
+    text-transform: uppercase;
+
+    position: absolute;
+    right: 1rem;
+    top: calc(50% - 1rem);
+
+    transition: transform .1s ease-in;
+}
+.button-play:active {
+    transform: scale(1.1);
+    transition: transform .1s var(--bouncy-easing);
 }

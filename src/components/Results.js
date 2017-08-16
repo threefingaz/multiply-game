@@ -1,6 +1,5 @@
 import React from 'react';
-// import Transition from 'react-transition-group/Transition';
-
+import Stopwatch from './svg/icon-stopwatch';
 import './Results.css';
 
 const results = ({score, gameSwitch}) => {
@@ -9,18 +8,20 @@ const results = ({score, gameSwitch}) => {
     const s = Math.floor(seconds - m * 60);
 
     return <div className="results">
+        <button className="button-stop"
+                onTouchEnd={() => {gameSwitch(false)}}
+                onClick={() => {gameSwitch(false)}}>
+        </button>
         <div className="result__fail">
-            <span className="fail-digit">{score.fail}</span>
+            <span className="fail-digit stroked"
+                  data-text={score.fail}>
+                {score.fail}
+            </span>
             <span className="fail-text">ошибок</span>
         </div>
         <span className="result__time">
-            ⏱ {m} : {s}
+            {Stopwatch()} {m < 10 ? `0${m}` : m} : {s < 10 ? `0${s}` : s}
         </span>
-        <button className="closeResults"
-            onTouchEnd={() => {gameSwitch(false)}}
-            onClick={() => {gameSwitch(false)}}>
-            Закрыть
-        </button>
     </div>;
 };
 

@@ -31,8 +31,8 @@
     transition: background-color .2s ease-in;
 }
 .button-stop {
-    width: 24px;
-    height: 24px;
+    width: 1.5rem;
+    height: 1.5rem;
     border-radius: 50%;
     border: 2px solid var(--color-gray);
     background: none;
@@ -42,13 +42,16 @@
     box-sizing: border-box;
     right: 10px;
     top: calc(50% - 12px);
-    font-size: 1.5rem;
+    font-size: 0;
     line-height: 0;
 }
-.button-stop:after {
+.button-stop:before {
     content: '×';
     display: block;
-    margin-top: -.06rem;
+    position: absolute;
+    top: .5rem;
+    left:.18rem;
+    font-size: 1.5rem;
 }
 .solution--correct {
     background-color: var(--color-yellow);

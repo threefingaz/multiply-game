@@ -1,29 +1,48 @@
 .results {
     position: absolute;
-    width: 100%;
-    height: 100vh;
-    background: rgba(255, 255, 255, .9);
+    width: 90%;
+    height: 94vh;
+    left: 5%;
+    top: 3vh;
+    background: #fff;
     z-index: 1000;
+    border-radius: 1.5rem;
+    border: 2px solid var(--color-darkblue);
 
     text-align: center;
     font-weight: 700;
     font-size: 2rem;
+    color: var(--color-darkblue);
 
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
+.results .button-stop {
+    top: 1rem;
+    right: 1rem;
+    border-color: var(--color-darkblue);
+    color: var(--color-darkblue);
+}
 
 .result__fail {
     display: block;
-    font-weight: 700;
+    font-weight: normal;
+    margin-bottom: 1rem;
 }
 .fail-digit {
     font-size: 4rem;
+    color: var(--color-red);
     display: block;
+    font-weight: 700;
+    line-height: 3rem;
 }
 .result__time {
     display: block;
-    font-weight: 700;
+    font-weight: normal;
+}
+.icon-stopwatch {
+    width: 1.5rem;
+    height: 1.5rem;
 }

@@ -53,8 +53,10 @@ class App extends Component {
         this.setState({
             play: bol,
             task: 0,
-            tip: true,
             answers: [],
+            tip: true,
+            cell: '',
+            check: 'default',
             score: {
                 correct: 0,
                 fail: 0,
@@ -66,17 +68,8 @@ class App extends Component {
 
     selectCell = (e) => {
         e.preventDefault();
-        let target;
-        if (e.targetTouches && e.targetTouches[0]) {
-            target = document.elementFromPoint(
-                e.targetTouches[0].clientX,
-                e.targetTouches[0].clientY
-            );
-        } else {
-            target = e.target;
-        }
-
-        if (target.dataset.cell === 'locked') return;
+        const target = findTarget(e);
+        if (!target || target.dataset.cell === 'locked') return;
 
         const cell = this.state.cell;
         let newCell = target.dataset.cell || cell;
@@ -85,12 +78,8 @@ class App extends Component {
 
     makeCheck = (e) => {
         e.preventDefault();
-        const is_table = Array.from(e.target.classList)
-            .some(element => (
-                element === 'table' || element === 'table__cell'
-            ));
-
-        if (!is_table) return;
+        const target= findTarget(e);
+        if (!target || !target.dataset.cell || target.dataset.cell === 'locked') return;
 
         let {task, answers, cell, score, check} = {...this.state};
         const solutions = this.table[this.queue[task]].solutions;
@@ -152,7 +141,7 @@ class App extends Component {
     render() {
         const {
             task, check, answers, cell, tip, play, level, score
-        } = {...this.state};
+            } = {...this.state};
         const {table, queue} = {...this};
         const currentTask = table[queue[task]].task;
         const solutions = table[queue[task]].solutions;
@@ -188,7 +177,7 @@ class App extends Component {
                 {play ? Progress({task, total: table.length}) : null}
 
                 <div className={keyboardClass[check]}>
-                    {play ?
+                    {play && cell.length ?
                         <span className={`selected-cell${selectedClass}`}>
                             {cell}
                         </span> : null
@@ -238,6 +227,20 @@ function getQueue(max = 41) {
         queue[queue.length] = random_num;
     }
     return queue;
+}
+
+function findTarget(e) {
+    let target;
+    if (e.targetTouches && e.targetTouches[0]) {
+        target = document.elementFromPoint(
+            e.targetTouches[0].clientX,
+            e.targetTouches[0].clientY
+        );
+    } else {
+        target = e.target;
+    }
+
+    return target;
 }
 
 export default App;

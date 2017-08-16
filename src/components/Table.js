@@ -1,5 +1,5 @@
 import React from 'react';
-import LockIcon from'./svg/icon-lock';
+import LockIcon from './svg/icon-stopwatch';
 
 import './Table.css';
 
