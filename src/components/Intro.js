@@ -5,7 +5,7 @@ import './Intro.css';
 const intro = ({gameSwitch}) => (
     <div className="display">
         <h1 className="intro-header">
-            Таблица<br/>умножения
+            Таблица умножения
         </h1>
         <button className="button button-play"
             onClick={() => {gameSwitch(true)}}

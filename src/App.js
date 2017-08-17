@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
+
 import Intro from './components/Intro';
 import Task from './components/Task';
 import Results from './components/Results';
 import Progress from './components/Progress';
+import Table from './components/Table';
 
 import './App.css';
-import Table from './components/Table';
 
 // base for multiplication table by levels
 const numbers = [
@@ -17,26 +18,20 @@ const numbers = [
 class App extends Component {
     constructor() {
         super();
-        const level = window.localStorage.level || 0;
+        const level = Number.parseFloat(window.localStorage.getItem('level')) || 0;
         // generate tasks and possible solutions
         this.table = getTable(level);
         // generate randomness
         this.queue = getQueue(this.table.length);
+
         this.state = {
-            // is game started?
-            play: false,
-            // current level
-            level,
-            // current task
-            task: 0,
-            // given answers
-            answers: [],
-            // need help?
-            tip: true,
-            // current selected cell 'n × n'
-            cell: '',
-            // answer check status (fail, correct, default)
-            check: 'default',
+            play: false,       // is game started?
+            level,             // current level
+            task: 0,           // current task
+            answers: [],       // given answers
+            tip: true,         // need help?
+            cell: '',          // current selected cell 'n × n'
+            check: 'default',  // answer check status (fail, correct, default)
             score: {
                 correct: 0,
                 fail: 0,
@@ -78,7 +73,7 @@ class App extends Component {
 
     makeCheck = (e) => {
         e.preventDefault();
-        const target= findTarget(e);
+        const target = findTarget(e);
         if (!target || !target.dataset.cell || target.dataset.cell === 'locked') return;
 
         let {task, answers, cell, score, check} = {...this.state};
@@ -118,6 +113,7 @@ class App extends Component {
         // when it's a last task in queue go to the new level
         if (isLastTaskInLevel) {
             newState.level = level === 2 ? 2 : level + 1;
+            window.localStorage.setItem('level', newState.level);
             this.table = getTable(newState.level);
             this.queue = getQueue(this.table.length);
         }
@@ -139,9 +135,7 @@ class App extends Component {
     };
 
     render() {
-        const {
-            task, check, answers, cell, tip, play, level, score
-            } = {...this.state};
+        const {task, check, answers, cell, tip, play, level, score} = {...this.state};
         const {table, queue} = {...this};
         const currentTask = table[queue[task]].task;
         const solutions = table[queue[task]].solutions;
@@ -162,25 +156,30 @@ class App extends Component {
                  onTouchStart={this.selectCell}
                  onTouchEnd={this.makeCheck}>
 
-                {play ? Task({
-                    currentTask, solutions, check, answers,
-                    nextTask: this.nextTask,
-                    gameSwitch: this.gameSwitch
-                }) : (
-                    Intro({gameSwitch: this.gameSwitch})
-                )}
+                {
+                    play ? Task({
+                        currentTask, solutions, check, answers,
+                        nextTask: this.nextTask,
+                        gameSwitch: this.gameSwitch
+                    }) : Intro({gameSwitch: this.gameSwitch})
+                }
 
-                {!play && (score.correct || score.fail) ? (
-                    Results({score, gameSwitch: this.gameSwitch})
-                ) : null}
+                {
+                    !play && (score.correct || score.fail) ? (
+                        Results({score, gameSwitch: this.gameSwitch})
+                    ) : null
+                }
 
-                {play ? Progress({task, total: table.length}) : null}
+                {
+                    play ? Progress({task, total: table.length}) : null
+                }
 
                 <div className={keyboardClass[check]}>
-                    {play && cell.length ?
-                        <span className={`selected-cell${selectedClass}`}>
-                            {cell}
-                        </span> : null
+                    {
+                        play && cell.length ?
+                            <span className={`selected-cell${selectedClass}`}>
+                                {cell}
+                            </span> : null
                     }
 
                     {

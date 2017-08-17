@@ -1,5 +1,4 @@
 import React from 'react';
-import LockIcon from './svg/icon-stopwatch';
 
 import './Table.css';
 
@@ -9,6 +8,9 @@ const Table = ({numbers, cell, task, tip, table, queue, play, level }) => {
 
         let selectedClass = '';
         let tipClass = '';
+        let colClass = '';
+        let isCellLocked;
+
         const currentTask = table[queue[task]];
         if (play) {
             if (cellNum1 >= num1 && cellNum2 >= num2) {
@@ -21,7 +23,6 @@ const Table = ({numbers, cell, task, tip, table, queue, play, level }) => {
             }
         }
 
-        let colClass = '';
         if (!play) {
             if (num1 * num2 === num1 || num1 * num2 === num2) {
                 colClass = ' number--byOne';
@@ -31,8 +32,6 @@ const Table = ({numbers, cell, task, tip, table, queue, play, level }) => {
             }
         }
 
-
-        let isCellLocked;
         switch (level) {
             case 0:
                 isCellLocked = num1 > 3;
@@ -68,7 +67,7 @@ const Table = ({numbers, cell, task, tip, table, queue, play, level }) => {
         <table className="table">
             <tbody>
             <tr className="table__row">
-                <th className="table__cell table__head"></th>
+                <th className="table__cell table__head">&nbsp;</th>
                 {numbers[2].map((number, i) => (
                     <th key={i} className="table__cell table__head">
                         {number}

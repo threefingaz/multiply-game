@@ -29,6 +29,7 @@ button {
     box-sizing: border-box;
     overflow: hidden;
     min-width: 300px;
+    min-height: 550px;
 }
 .app--playing {
     background-color: #fff;
@@ -99,35 +100,36 @@ button {
 }
 
 .selected-cell {
-    display: none;
-    align-items: center;
-    justify-content: center;
+    height: 2rem;
     width: 6rem;
-    height: 1.75rem;
+    padding: 0 1rem;
+    box-sizing: border-box;
     position: absolute;
     top: -1.25rem;
     left: calc(50% - 3rem);
+    opacity: 0;
 
-    background: var(--color-lightblue);
+    background: #fff;
     border-radius: 1rem;
-    border: 2px solid var(--color-darkblue);
+    border: 3px solid var(--color-darkblue);
 
-    color: #fff;
-    font-size: 1.5rem;
+    color: var(--color-darkblue);
+    font-size: 1.4rem;
+    line-height: 1.8rem;
+    text-align: center;
     letter-spacing: -1px;
     font-weight: 700;
-    line-height: 0;
     pointer-events: none;
 }
 .selected-cell--visible {
     transform: translateY(0);
-    display: flex;
-    animation: .1s selectedShowAnimation .1s var(--bouncy-easing) forwards;
+    display: block;
+    animation: .2s selectedShowAnimation .2s var(--bouncy-easing) forwards;
 }
 .selected-cell--hidden {
     transform: translateY(0);
-    display: flex;
-    animation: .1s selectedHideAnimation var(--bouncy-easing) forwards;
+    display: block;
+    animation: .2s selectedHideAnimation var(--bouncy-easing) forwards;
 }
 
 .number--selected:after {
@@ -217,20 +219,20 @@ button {
 @keyframes selectedShowAnimation {
     0% {
         opacity: 0;
-        transform: translateY(1rem);
+        transform: scale(.8);
     }
     100% {
         opacity: 1;
-        transform: translateY(0);
+        transform: scale(1);
     }
 }
 @keyframes selectedHideAnimation {
     0% {
         opacity: 1;
-        transform: translateY(0);
+        transform: scale(1);
     }
     100% {
         opacity: 0;
-        transform: translateY(-1rem);
+        transform: scale(.8);
     }
 }

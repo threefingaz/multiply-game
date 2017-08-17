@@ -1,10 +1,12 @@
 .intro-header {
     color: var(--color-darkblue);
     font-weight: 700;
-    letter-spacing: -.05rem;
     font-size: 1.4rem;
     text-align: left;
     margin: 0;
+    width: 75%;
+    padding-right: .5rem;
+    box-sizing: content-box;
 }
 .button-play {
     background-color: var(--color-yellow);
